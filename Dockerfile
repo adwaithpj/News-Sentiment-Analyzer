@@ -15,4 +15,3 @@ RUN poetry install --no-root
 
 # Expose FastAPI and Streamlit ports
 EXPOSE 8000
-EXPOSE 8501

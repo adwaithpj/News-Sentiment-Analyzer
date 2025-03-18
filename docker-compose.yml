@@ -8,42 +8,41 @@ services:
         container_name: fastapi_app_prod
         ports:
             - "8000:8000"
-        networks:
-            - my_network
+        # networks:
+        #     - my_network
         volumes:
             - .:/app
         environment:
             - PYTHONUNBUFFERED=1
         command: ["poetry", "run", "python", "api.py"]
+#     streamlit:
+#         build:
+#             context: .
+#             dockerfile: Dockerfile
+#         container_name: streamlit_app_prod
+#         ports:
+#             - "8501:8501"
+#         networks:
+#             - my_network
+#         depends_on:
+#             - fastapi
+#         volumes:
+#             - .:/app
+#         environment:
+#             - PYTHONUNBUFFERED=1
+#             - GEMINI_API_KEY=${GEMINI_API_KEY}
 
-    streamlit:
-        build:
-            context: .
-            dockerfile: Dockerfile
-        container_name: streamlit_app_prod
-        ports:
-            - "8501:8501"
-        networks:
-            - my_network
-        depends_on:
-            - fastapi
-        volumes:
-            - .:/app
-        environment:
-            - PYTHONUNBUFFERED=1
-            - GEMINI_API_KEY=${GEMINI_API_KEY}
+#         command:
+#             [
+#                 "poetry",
+#                 "run",
+#                 "streamlit",
+#                 "run",
+#                 "app.py",
+#                 "--server.headless=true",
+#                 "--server.port=8501",
+#             ]
 
-        command:
-            [
-                "poetry",
-                "run",
-                "streamlit",
-                "run",
-                "app.py",
-                "--server.headless=true",
-                "--server.port=8501",
-            ]
-
-networks:
-    my_network:
-        driver: bridge
+# networks:
+#     my_network:
+#         driver: bridge
