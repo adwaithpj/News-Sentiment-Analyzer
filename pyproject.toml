@@ -1,0 +1,25 @@
+[project]
+name = "akaike-assignment"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Adwaith PJ",email = "adwaithleans616@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "streamlit (>=1.43.2,<2.0.0)",
+    "fastapi[standard] (>=0.115.11,<0.116.0)",
+    "bs4 (>=0.0.2,<0.0.3)",
+    "gtts (>=2.5.4,<3.0.0)",
+    "google (>=3.0.0,<4.0.0)",
+    "google-genai (>=1.5.0,<2.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "akaike_assignment", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
