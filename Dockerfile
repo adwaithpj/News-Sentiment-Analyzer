@@ -4,14 +4,20 @@ FROM python:3.12
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy project files to the container
-COPY . .
+# Copy only required files first (to leverage Docker caching)
+COPY pyproject.toml poetry.lock ./
 
 # Install Poetry
-RUN pip install poetry
+RUN pip install --no-cache-dir poetry
 
 # Install dependencies
-RUN poetry install --no-root
+RUN poetry install --no-root --no-dev
 
-# Expose FastAPI and Streamlit ports
+# Copy the remaining project files
+COPY . .
+
+# Expose FastAPI port
 EXPOSE 8000
+
+# Default command to run the application
+CMD ["poetry", "run", "python", "api.py"]
