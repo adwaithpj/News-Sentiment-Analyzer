@@ -16,9 +16,6 @@ dependencies = [
     "google-genai (>=1.5.0,<2.0.0)"
 ]
 
-[tool.poetry]
-packages = [{include = "akaike_assignment", from = "src"}]
-
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
