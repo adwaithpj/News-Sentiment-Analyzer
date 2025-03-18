@@ -2,8 +2,7 @@ import streamlit as st
 import requests
 import pandas as pd
 import os
-import base64
-from typing import Dict, Any,List
+from typing import Dict, Any, List
 import json
 import time
 
@@ -14,16 +13,10 @@ st.set_page_config(
     layout="wide"
 )
 
-# API endpoint
-API_URL = os.getenv("API_URL", "http://localhost:8000")
 
-def get_audio_player(audio_path: str):
-    if os.path.exists(audio_path):
-        with open(audio_path, "rb") as audio_file:
-            audio_bytes = audio_file.read()
-        audio_b64 = base64.b64encode(audio_bytes).decode()
-        return f'<audio controls><source src="data:audio/mp3;base64,{audio_b64}" type="audio/mp3"></audio>'
-    return "Audio file not found"
+# API endpoint for fastapi
+API_URL = os.getenv("API_URL", "http://fastapi_app_prod:8000")
+
 
 def render_comparative_analysis(analysis: Dict[str, Any]):
     st.subheader("Comparative Analysis")
@@ -36,12 +29,12 @@ def render_comparative_analysis(analysis: Dict[str, Any]):
             "Count": list(sentiment_dist.values())
         })
         st.bar_chart(sentiment_df.set_index("Sentiment"))
-    
+
     st.write("##### Coverage Differences")
     coverage_diff = analysis.get("coverage_differences", [])
     for i, diff in enumerate(coverage_diff):
-        st.markdown(f"**Comparison {i+1}:** {diff.get('comparison', '')}")
-        st.markdown(f"**Impact:** {diff.get('impact', '')}")
+        st.markdown(f"**Comparison {i+1}: ** {diff.get('comparison', '')}")
+        st.markdown(f"**Impact: ** {diff.get('impact', '')}")
         st.markdown("---")
     
     st.write("##### Topic Analysis")
@@ -65,7 +58,8 @@ def render_comparative_analysis(analysis: Dict[str, Any]):
         else:
             st.markdown("No unique topics found")
 
-def render_articles(articles:List[dict[Any]]):
+
+def render_articles(articles: List[dict[Any]]):
     st.subheader("Article Analysis")
     if articles:
         for i, article in enumerate(articles):
@@ -78,11 +72,11 @@ def render_articles(articles:List[dict[Any]]):
     else:
         st.warning("No articles found")
 
+
 def main():
     st.title("News Sentiment Analyzer")
     st.markdown("""
-    This app analyzes sentiment from news articles about a company. 
-    It extracts key information, performs sentiment analysis, and provides a comparative overview.
+    This app analyzes sentiment from news articles about a company.It extracts key information, performs sentiment analysis, and provides a comparative overview.
     """)
 
     with st.form("company_form"):
@@ -128,7 +122,6 @@ def main():
                         st.error(f"Error: {response.status_code} - {response.text}")
                 except Exception as e:
                     st.error(f"An error occurred: {str(e)}")
-    
 
     st.sidebar.title("About")
     st.sidebar.info("""
@@ -139,7 +132,6 @@ def main():
     - gTTS for Hindi text-to-speech
     """)
     
-
     # Display API status
     try:
         health_response = requests.get(f"{API_URL}/health")
