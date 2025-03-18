@@ -8,10 +8,10 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 
 # Install Poetry
-RUN pip install --no-cache-dir poetry
+RUN pip install poetry
 
 # Install dependencies
-RUN poetry install --no-root --no-dev
+RUN poetry install --no-root
 
 # Copy the remaining project files
 COPY . .
