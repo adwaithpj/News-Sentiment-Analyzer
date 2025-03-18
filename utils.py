@@ -8,8 +8,25 @@ from gtts import gTTS
 import time
 from dotenv import load_dotenv
 from pydantic import BaseModel
+import boto3
+from io import BytesIO
+
 
 load_dotenv()
+
+AWS_ACCESS_KEY=os.getenv('AWS_ACCESS_KEY')
+AWS_SECRET_KEY=os.getenv('AWS_SECRET_KEY')
+AWS_REGION=os.getenv('AWS_REGION')
+S3_BUCKET_NAME=os.getenv('S3_BUCKET_NAME')
+
+s3_client = boto3.client(
+    "s3",
+    aws_access_key_id=AWS_ACCESS_KEY,
+    aws_secret_access_key=AWS_SECRET_KEY,
+    region_name=AWS_REGION
+)
+
+
 
 class Sentiment(BaseModel):
     title:str
@@ -171,12 +188,14 @@ async def comparative_analysis(articles:List[Dict[str,Any]])->Dict[str,Any]:
                 "final_sentiment_analysis": "Failed to perform comparative analysis."
             }
 
+# async def upload_audio_to_s3(filepath,file_name):
+#     s3_client.upload_file(filepath,os.getenv('S3_BUCKET_NAME'),f"audio/{file_name}")
+#     s3_url = f"https://{os.getenv('S3_BUCKET_NAME')}.s3.{os.getenv('AWS_REGION')}.amazonaws.com/audio/{file_name}"
+#     return s3_url
 
 async def generateHindiTTS(company:str,text:str):
-    output_dir ="audio"
-    output_file = f"{output_dir}/{company}.mp3"
+    s3_file_path = f"audio/{company}.mp3"
 
-    os.makedirs(output_dir, exist_ok=True)  
 
     prompt = f"""
         Translate the following English text to Hindi:
@@ -204,8 +223,14 @@ async def generateHindiTTS(company:str,text:str):
         hindi_data = translated_data["translated"]
 
         tts = gTTS(text=hindi_data,lang='hi')
-        tts.save(output_file)
-        return output_file
+        audio_buffer = BytesIO()
+        tts.write_to_fp(audio_buffer)
+        audio_buffer.seek(0)
+
+        s3_client.upload_fileobj(audio_buffer,S3_BUCKET_NAME, s3_file_path, ExtraArgs={"ContentType": "audio/mpeg"})
+        s3_url = f"https://{S3_BUCKET_NAME}.s3.{AWS_REGION}.amazonaws.com/{s3_file_path}"
+
+        return s3_url
     except Exception as e:
         print(f"Error while generating Hindi TTS: {e}")
         tts = gTTS(text="माफ़ करें, हम आपके अनुरोध को प्रोसेस नहीं कर सके।", lang='hi')

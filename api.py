@@ -50,7 +50,9 @@ async def analyze_company(request: CompanyRequest, background_tasks: BackgroundT
         sentiment_analyzed_data.append(await sentimentAnalyzer(article[0],article[1]))
     
     comparative_analyzed_data = await comparative_analysis(sentiment_analyzed_data)
+
     new_comparative_analyzed_data = {key: value for key, value in comparative_analyzed_data.items() if key != "final_sentiment_analysis"}
+    
     audio_path = await generateHindiTTS(request.company_name,comparative_analyzed_data['final_sentiment_analysis'])
 
     final_result = {
