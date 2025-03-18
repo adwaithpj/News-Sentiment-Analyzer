@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+    fastapi:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: fastapi_app
+        ports:
+            - "8000:8000"
+        volumes:
+            - .:/app
+        environment:
+            - PYTHONUNBUFFERED=1
+        command: ["fastapi", "run", "api.py"]
+
+    streamlit:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: streamlit_app
+        ports:
+            - "8501:8501"
+        depends_on:
+            - fastapi
+        volumes:
+            - .:/app
+        environment:
+            - PYTHONUNBUFFERED=1
+        command:
+            [
+                "streamlit",
+                "run",
+                "app.py",
+                "--server.headless=true",
+                "--server.port=8501",
+                "--server.enableCORS=false",
+            ]
