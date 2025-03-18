@@ -1,46 +1,46 @@
 name: News Sentiment Analyzer - CI/CD
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    steps:
-      # ✅ Step 1: Checkout the repository
-      - name: 🛎️ Checkout repository
-        uses: actions/checkout@v3
+        steps:
+            # ✅ Step 1: Checkout the repository
+            - name: 🛎️ Checkout repository
+              uses: actions/checkout@v3
 
-      # ✅ Step 2: Set up Python and install Poetry
-      - name: ⚙️ Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
+            # ✅ Step 2: Set up Python and install Poetry
+            - name: ⚙️ Set up Python
+              uses: actions/setup-python@v4
+              with:
+                  python-version: "3.10"
 
-      - name: 📦 Install Poetry
-        run: pip install poetry
+            - name: 📦 Install Poetry
+              run: pip install poetry
 
-      # ✅ Step 3: Install dependencies using Poetry
-      - name: 📥 Install dependencies
-        run: poetry install
+            # ✅ Step 3: Install dependencies using Poetry
+            - name: 📥 Install dependencies
+              run: poetry install
 
-      # ✅ Step 4: Set up environment variables
-      - name: 🔑 Set up environment variables
-        run: echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" > .env
+            # ✅ Step 4: Set up environment variables
+            - name: 🔑 Set up environment variables
+              run: echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" > .env
 
-      # ✅ Step 5: Run FastAPI Backend in the Background
-      - name: 🚀 Start FastAPI backend
-        run: |
-          run: poetry run python api.py &
-        continue-on-error: true
+            # ✅ Step 5: Run FastAPI Backend in the Background
+            - name: 🚀 Start FastAPI backend
+              run: |
+                  run: poetry run python api.py &
+              continue-on-error: true
 
-      # ✅ Step 6: Run Streamlit Frontend
-      - name: 🎨 Start Streamlit frontend
-        run: |
-          poetry run streamlit run app.py --server.port 8501 --server.address 0.0.0.0
+            # ✅ Step 6: Run Streamlit Frontend
+            - name: 🎨 Start Streamlit frontend
+              run: |
+                  poetry run streamlit run app.py --server.headless true &
