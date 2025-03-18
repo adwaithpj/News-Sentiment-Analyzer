@@ -47,6 +47,8 @@ Create a **`.env`** file in the project root and add:
 GOOGLE_API_KEY=your_google_gemini_api_key
 ```
 
+This is important to access the Gemini API, otherwise the application won't work.
+
 ### **5️⃣ Run the FastAPI Backend**
 
 ```
