@@ -55,6 +55,9 @@ poetry run fastapi dev api.py
 
 📍 The API will be available at **http://127.0.0.1:8000**
 
+![image](https://github.com/user-attachments/assets/555c7027-3e5a-4f9d-acc4-5a1e832d8b10)
+
+
 ### **6️⃣ Run the Streamlit Frontend**
 
 Create a new powershell/cmd and run:
