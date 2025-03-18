@@ -15,7 +15,7 @@ st.set_page_config(
 
 
 # API endpoint for fastapi
-API_URL = os.getenv("API_URL", "http://localhost:8000")
+API_URL = os.getenv("API_URL")
 
 
 def render_comparative_analysis(analysis: Dict[str, Any]):
@@ -111,7 +111,8 @@ def main():
                         audio_path = data.get("audio_path")
                         print(audio_path)
                         if audio_path:
-                            st.markdown(f"[📥 Download Audio]({audio_path})", unsafe_allow_html=True)
+                            # st.markdown(f"[📥 Download Audio]({audio_path})", unsafe_allow_html=True)
+                            st.audio(audio_path,format='format/mp3')
                         else:
                             st.warning("Audio file not available")
                         

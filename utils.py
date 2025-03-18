@@ -26,8 +26,6 @@ s3_client = boto3.client(
     region_name=AWS_REGION
 )
 
-
-
 class Sentiment(BaseModel):
     title:str
     sentiment:str
@@ -102,7 +100,6 @@ async def sentimentAnalyzer(title:str,description:str):
         }}
         """
     
-
     try:
         response = client.models.generate_content(
             model='gemini-2.0-flash',
