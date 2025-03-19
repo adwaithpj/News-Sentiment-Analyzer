@@ -5,6 +5,9 @@ import os
 from typing import Dict, Any, List
 import json
 import time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Set page config
 st.set_page_config(
@@ -16,9 +19,12 @@ st.set_page_config(
 
 # API endpoint for fastapi
 API_URL = os.getenv("API_URL")
+if not API_URL:
+    st.error("API_URL is not set. Please check your environment variables.")
+    st.stop()
 
 
-def render_comparative_analysis(analysis: Dict[str, Any]):
+def render_comparative_analysis(analysis):
     st.subheader("Comparative Analysis")
     st.write("##### Sentiment Distribution")
     sentiment_dist = analysis.get("sentiment_distribution", {})
@@ -33,8 +39,8 @@ def render_comparative_analysis(analysis: Dict[str, Any]):
     st.write("##### Coverage Differences")
     coverage_diff = analysis.get("coverage_differences", [])
     for i, diff in enumerate(coverage_diff):
-        st.markdown(f"**Comparison {i+1}: ** {diff.get('comparison', '')}")
-        st.markdown(f"**Impact: ** {diff.get('impact', '')}")
+        st.markdown(f"**Comparison {i+1}:** {diff.get('comparison', '')}")
+        st.markdown(f"**Impact:** {diff.get('impact', '')}")
         st.markdown("---")
     
     st.write("##### Topic Analysis")
@@ -59,7 +65,7 @@ def render_comparative_analysis(analysis: Dict[str, Any]):
             st.markdown("No unique topics found")
 
 
-def render_articles(articles: List[dict[Any]]):
+def render_articles(articles: List[Dict[str,Any]]):
     st.subheader("Article Analysis")
     if articles:
         for i, article in enumerate(articles):
@@ -108,11 +114,11 @@ def main():
                         
                         st.subheader("Hindi Audio Summary")
                       
+                        # Here we are useing the s3 url object path of audio
+                        # The utils function saves the audio in the s3 bucket.
                         audio_path = data.get("audio_path")
-                        print(audio_path)
                         if audio_path:
-                            # st.markdown(f"[📥 Download Audio]({audio_path})", unsafe_allow_html=True)
-                            st.audio(audio_path,format='format/mp3')
+                            st.audio(audio_path,format='audio/mp3')
                         else:
                             st.warning("Audio file not available")
                         
